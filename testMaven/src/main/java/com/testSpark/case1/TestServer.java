@@ -14,6 +14,8 @@ public class TestServer {
 		
 		Socket socket = server.accept();
 		
+		System.out.println(socket.getInetAddress() + " is connected.");
+		
 		OutputStream os = socket.getOutputStream();
 		
 		PrintWriter pw = new PrintWriter(os);
