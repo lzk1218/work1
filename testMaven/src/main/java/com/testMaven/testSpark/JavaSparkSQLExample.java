@@ -22,8 +22,6 @@ import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 
-import com.testMaven.testSpark.JavaSparkSQLExample.Person;
-
 public class JavaSparkSQLExample {
 	// $example on:create_ds$
   public static class Person implements Serializable {

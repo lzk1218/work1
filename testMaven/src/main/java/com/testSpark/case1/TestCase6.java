@@ -6,7 +6,12 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.streaming.StreamingQuery;
 import org.apache.spark.sql.types.StructType;
 
-public class TestCase2 {
+/**
+ * structured data stream join with other streams
+ * @author lzk48681
+ *
+ */
+public class TestCase6 {
 
 	public static void main(String[] args) throws Exception {
 		SparkSession spark = createSession();
@@ -23,31 +28,34 @@ public class TestCase2 {
 		
 		ds.printSchema();
 		
-		//method 1
-//		ds = ds.filter(row -> row.get(0).equals("u10"));
-//		
+		StructType insSchema = new StructType().add("insurId", "string")
+				.add("userId", "string");
+		
+		Dataset<Row> ds2 = spark.readStream()
+				.format("csv")
+				.schema(insSchema)
+				.load("D:/spark-test/case1/insurance");
+				
+		ds2.printSchema();
+		
+		//method 1 inner join between two stream DataFrames
+		//raise an error, because Inner join between two streaming DataFrames/Datasets is not supported;
+//		ds = ds.join(ds2, ds.col("userId").equalTo(ds2.col("userId")));
 //		StreamingQuery query = ds.writeStream()
-//				.format("console")
-//				.start();
-		
-		//method 2
-		StreamingQuery query = ds.groupBy(ds.col("depId")).count().writeStream()
-		.outputMode("complete")
-		.format("console")
-		.start();
-		
-		
-		
-		//
-		//rtn.show();
-		//
-		
-		//method 3
-//		ds.createOrReplaceTempView("user");
-//		StreamingQuery query = spark.sql("select u.* from user u where u.userId = 'u10'")
-//		.writeStream()
 //		.format("console")
 //		.start();
+		
+		
+		//method 2 inner join with static DataFrame
+		//it is running good
+		Dataset<Row> ds3 = spark.read()
+							.format("csv")
+							.schema(insSchema)
+							.load("D:/spark-test/case1/insurance");
+		ds = ds.join(ds3, ds.col("userId").equalTo(ds3.col("userId")));
+		StreamingQuery query = ds.writeStream()
+		.format("console")
+		.start();
 		
 		query.awaitTermination();
 	}
