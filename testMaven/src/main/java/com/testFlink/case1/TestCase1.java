@@ -7,6 +7,11 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
+/**
+ * 
+ * @author lzk48681
+ *
+ */
 public class TestCase1 {
 
 	public static void main(String[] args) throws Exception {
@@ -28,7 +33,7 @@ public class TestCase1 {
 		.where(tuple4 -> tuple4.f0)
 		.equalTo(tuple2 -> tuple2.f1)
 		.window(TumblingProcessingTimeWindows.of(Time.seconds(1))).apply((left,right) -> left)
-		.print();
+		.print().setParallelism(1);
 
 		env.execute("Test Joined Window");
 	}
