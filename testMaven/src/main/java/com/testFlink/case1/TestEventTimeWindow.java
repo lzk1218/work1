@@ -46,7 +46,7 @@ public class TestEventTimeWindow {
 		.print()
 		.setParallelism(1);
 
-		
+		//空方法，为了测试
 		env.execute("Test Event Time Window");
 		
 	}
